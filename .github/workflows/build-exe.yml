@@ -1,63 +1,59 @@
+name: Build Windows EXE
 
-+name: Build Windows EXE
-+
-+on:
- workflow_dispatch:
-   inputs:
-     upload_release:
-       description: "Attach zip to a GitHub release (requires running on a tag)"
-       required: false
-       default: "false"
-     python_version:
-       description: "Python version to use"
-       required: false
-       default: "3.11"
- push:
-   tags:
-     - 'v*'
-+
-+jobs:
- windows-build:
-   runs-on: windows-latest
-   steps:
-     - name: Check out repository
-       uses: actions/checkout@v4
-+
-     - name: Set up Python
-       uses: actions/setup-python@v5
-       with:
-         python-version: ${{ github.event.inputs.python_version || '3.11' }}
-+
-     - name: Install dependencies
-       run: |
-         python -m pip install --upgrade pip
-         pip install -r requirements.txt
-+
-     - name: Build executable
-       run: |
-         pyinstaller --onefile --name youtube_downloader youtube_downloader.py
-+
-     - name: Package artifacts
-       run: |
-         New-Item -ItemType Directory -Path upload -Force | Out-Null
-         Copy-Item dist\youtube_downloader.exe upload\
-         Copy-Item links.sample.txt upload\
-         Copy-Item README.md upload\
-         Compress-Archive -Path upload\* -DestinationPath upload\youtube_downloader_windows.zip -Force
-+
-     - name: Upload workflow artifacts
-       uses: actions/upload-artifact@v4
-       with:
-         name: youtube-downloader-windows
-         path: |
-           upload/youtube_downloader.exe
-           upload/youtube_downloader_windows.zip
-+
-     - name: Attach zip to GitHub release
-       if: startsWith(github.ref, 'refs/tags/') && (github.event.inputs.upload_release == 'true')
-       uses: softprops/action-gh-release@v2
-       with:
-         files: upload/youtube_downloader_windows.zip
- 
+on:
+  workflow_dispatch:
+    inputs:
+      upload_release:
+        description: "Attach zip to a GitHub release (requires running on a tag)"
+        required: false
+        default: "false"
+      python_version:
+        description: "Python version to use"
+        required: false
+        default: "3.11"
+  push:
+    tags:
+      - 'v*'
 
-)
+jobs:
+  windows-build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ github.event.inputs.python_version || '3.11' }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build executable
+        run: |
+          pyinstaller --onefile --name youtube_downloader youtube_downloader.py
+
+      - name: Package artifacts
+        run: |
+          New-Item -ItemType Directory -Path upload -Force | Out-Null
+          Copy-Item dist\youtube_downloader.exe upload\
+          Copy-Item links.sample.txt upload\
+          Copy-Item README.md upload\
+          Compress-Archive -Path upload\* -DestinationPath upload\youtube_downloader_windows.zip -Force
+
+      - name: Upload workflow artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-downloader-windows
+          path: |
+            upload/youtube_downloader.exe
+            upload/youtube_downloader_windows.zip
+
+      - name: Attach zip to GitHub release
+        if: startsWith(github.ref, 'refs/tags/') && (github.event.inputs.upload_release == 'true')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: upload/youtube_downloader_windows.zip
