@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hello World Buttons</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      gap: 12px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <p id="message">Hello world</p>
+  <div class="controls">
+    <button id="yellow-btn" type="button">变成黄色</button>
+    <button id="blue-btn" type="button">变成蓝色</button>
+  </div>
+
+  <script>
+    const message = document.getElementById('message');
+    document.getElementById('yellow-btn').addEventListener('click', () => {
+      message.style.color = 'goldenrod';
+    });
+    document.getElementById('blue-btn').addEventListener('click', () => {
+      message.style.color = 'royalblue';
+    });
+  </script>
+</body>
+</html>
